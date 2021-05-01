@@ -32,7 +32,7 @@ public:
  * Contains set of unit types
  */
 enum UnitType { rock, scissors, paper, mountain, flag };
-enum CollisionResult { win, rollback, battle, ok };
+enum CollisionResult { win, rollback, battle };
 
 /**
  * Contains parameters and method for unit to follow
@@ -89,12 +89,30 @@ public:
 
 CollisionResult RPS::collision(Unit *collidedUnit) {
     if (this->owner->getId() == collidedUnit->getOwner()->getId()) {
-
+        return rollback;
+    } else {
+        return battle;
     }
 }
 
-class Mountain : public Unit {};
-class Flag : public Unit {};
+class Mountain : public Unit {
+public:
+    CollisionResult collision(Unit *collidedUnit) override;
+};
+
+CollisionResult Mountain::collision(Unit *collidedUnit) {
+    return rollback;
+}
+
+class Flag : public Unit {
+public:
+    CollisionResult collision(Unit *collidedUnit) override;
+};
+
+CollisionResult Flag::collision(Unit *collidedUnit) {
+    return win;
+}
+
 class World {};
 class GameController {
 private:
@@ -112,7 +130,6 @@ public:
  * to spectate game live
  */
 void clearConsole() {
-
 #ifdef WINDOWS
     std::system("cls")
 #else
